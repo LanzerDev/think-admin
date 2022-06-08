@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-admin-page',
@@ -25,4 +27,8 @@ export class AdminPageComponent implements OnInit {
     }
   }
 
+
+  public getEdad(fecha_nacimiento:any){
+    return moment().diff(fecha_nacimiento, 'years')
+  }
 }

@@ -27,6 +27,7 @@
                 <th scope="col">Internet</th>
                 <th scope="col">Personas hogar</th>
                 <th scope="col">Personas hogar trabajaron</th>
+                <th scope="col">Accion</th>
               </tr>
             </thead>
             <tbody>
@@ -60,6 +61,9 @@
                     <td>{{usuario.tiene_internet}}</td>
                     <td>{{usuario.numero_personas_hogar}}</td>
                     <td>{{usuario.numero_personas_trabajaron}}</td>
+                    <td>
+                        <button class="btn btn-danger" (click)="removeTask(usuario)">Eliminar usuario</button>
+                    </td>
                 </tr>
             </tbody>
           </table>

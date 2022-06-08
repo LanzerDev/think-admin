@@ -9,7 +9,20 @@ export class AdminPageComponent implements OnInit {
 
   constructor() { }
 
+  public usuarios:Array<any> = [];
+  
   ngOnInit(): void {
+    this.getUsuarios()
+  }
+
+
+  public getUsuarios() {
+    if (localStorage.getItem("usuarios") === null) {
+      this.usuarios = []
+    } else {
+      console.log('si')
+      this.usuarios = JSON.parse(localStorage.getItem("usuarios")!)
+    }
   }
 
 }

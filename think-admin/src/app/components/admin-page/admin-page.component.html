@@ -1,71 +1,35 @@
-<br><br>
+
 <h3 class="text-center">Tabla usuarios</h3>
 <br>
 <div class="container w-75">
     <div class="table-responsive">
-        <table class="table table-striped table-bordered table-sm border-dark">
-            <thead>
-              <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Apellido 1</th>
-                <th scope="col">Apellido 2</th>
-                <th scope="col">Correo</th>
-                <th scope="col">Telefono</th>
-                <th scope="col">Genero</th>
-                <th scope="col">Fecha nacimiento</th>
-                <th scope="col">Edad</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Municipio</th>
-                <th scope="col">Nivel estudios</th>
-                <th scope="col">Carrera completa</th>
-                <th scope="col">Ocupacion</th>
-                <th scope="col">Nivel de ingresos</th>
-                <th scope="col">Estado civil</th>
-                <th scope="col">Tiene hijos</th>
-                <th scope="col">Tiene hijos menores a 18</th>
-                <th scope="col">Automoviles hogar</th>
-                <th scope="col">Internet</th>
-                <th scope="col">Personas hogar</th>
-                <th scope="col">Personas hogar trabajaron</th>
-                <th scope="col">Accion</th>
-              </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let usuario of usuarios; let i = index;">
-                    <td>{{usuario.nombre}}</td>
-                    <td>{{usuario.apellido1}}</td>
-                    <td>{{usuario.apellido2}}</td>
-                    <td>{{usuario.email}}</td>
-                    <td>{{usuario.telefono}}</td>
-                    <td>{{usuario.genero}}</td>
-                    <td>{{usuario.fecha_nacimiento}}</td>
-                    <td>{{getEdad(usuario.fecha_nacimiento)}}</td>
-                    <td>{{usuario.estado}}</td>
-                    <td>{{usuario.municipio}}</td>
-                    <td>{{usuario.nivel_estudios}}</td>
-                    <td>
-                        <div class="hid">
-                            {{usuario.carrera}}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="hid">
-                            {{usuario.ocupacion}}
-                        </div>
-                    </td>
-                    <td>{{usuario.nivel_ingresos}}</td>
-                    <td>{{usuario.estado_civil}}</td>
-                    <td>{{usuario.tiene_hijos}}</td>
-                    <td>{{usuario.tiene_hijos_menores18}}</td>
-                    <td>{{usuario.numero_automoviles}}</td>
-                    <td>{{usuario.tiene_internet}}</td>
-                    <td>{{usuario.numero_personas_hogar}}</td>
-                    <td>{{usuario.numero_personas_trabajaron}}</td>
-                    <td>
-                        <button class="btn btn-danger" (click)="removeTask(usuario)">Eliminar usuario</button>
-                    </td>
-                </tr>
-            </tbody>
+        <table datatable [dtOptions]="dtOptions" class="row-border hover">
+            <tfoot>
+                <tr>
+                  <th><input type="text"  placeholder="Buscar nombre" name="nombre"/></th>
+                  <th><input type="text"  placeholder="Buscar apellido 1" name="apellido1"/></th>
+                  <th><input type="text"  placeholder="Buscar email" name="email"/></th>
+                  <th><input type="text"  placeholder="Buscar email" name="email"/></th>
+                  <th><input type="text"  placeholder="Buscar telefono" name="telefono"/></th>
+                  <th><input type="text"  placeholder="Buscar genero" name="genero"/></th>
+                  <th><input type="text"  placeholder="Buscar fecha nacimiento" name="fecha_nacimiento"/></th>
+                  <th><input type="text"  placeholder="Buscar estado" name="estado"/></th>
+                  <th><input type="text"  placeholder="Buscar municipio" name="municipio"/></th>
+                  <th><input type="text"  placeholder="Buscar nivel estudios" name="nivel_estudios"/></th>
+                  <th><input type="text"  placeholder="Buscar carrera" name="carrera"/></th>
+                  <th><input type="text"  placeholder="Buscar ocupacion" name="ocupacion"/></th>
+                  <th><input type="text"  placeholder="Buscar nivel ingresos" name="nivel_ingresos"/></th>
+                  <th><input type="text"  placeholder="Buscar estado civil" name="estado_civil"/></th>
+                  <th><input type="text"  placeholder="Buscar tiene hijos" name="tiene_hijos"/></th>
+                  <th><input type="text"  placeholder="Buscar tiene hijos_menores18" name="tiene_hijos_menores18"/></th>
+                  <th><input type="text"  placeholder="Buscar numero automoviles" name="numero_automoviles"/></th>
+                  <th><input type="text"  placeholder="Buscar tiene internet" name="tiene_internet"/></th>
+                  <th><input type="text"  placeholder="Buscar numero personas hogar" name="numero_personas_hogar"/></th>
+                  <th><input type="text"  placeholder="Buscar numero personas trabajaron" name="numero_personas_trabajaron"/></th>
+                </tr>   
+              </tfoot>            
           </table>
     </div>
 </div>
+
+

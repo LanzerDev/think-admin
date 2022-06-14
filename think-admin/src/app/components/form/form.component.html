@@ -1,0 +1,182 @@
+<br>
+<div class="container">
+  <h2 class="text-center">Formulario de registro</h2>
+  <form (ngSubmit)="saveForm(form)" #form="ngForm" class="needs-validation" validate>
+    <div class="row">
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Nombre(s)</label>
+        <input type="text" name="nombre" ngModel #nombre="ngModel" class="form-control" placeholder="Ingrese su nombre" required="true">
+        <small *ngIf="!nombre.valid && nombre.touched" class="invalid-feedback d-block">
+          El nombre no es válido
+        </small>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Apellido paterno</label>
+        <input type="text" name="apellido1" ngModel #apellido1="ngModel"  class="form-control" placeholder="Ingrese su apellido paterno" required="true">
+        <small *ngIf="!apellido1.valid && apellido1.touched" class="invalid-feedback d-block">
+          El apellido paterno no es válido
+        </small>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Apellido materno</label>
+        <input class="form-control" type="text" name="apellido2" #apellido2="ngModel" ngModel placeholder="Ingrese su apellido materno" required="true">
+        <small *ngIf="!apellido2.valid && apellido2.touched" class="invalid-feedback d-block">
+          El apellido materno no es válido
+        </small>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Correo</label>
+        <input type="email" class="form-control" name="email" ngModel #email="ngModel" id="email" placeholder="Ingrese su email" required="true">
+        <small *ngIf="!email.valid && email.touched" class="invalid-feedback d-block">
+          El correo no es valido
+        </small>
+            <div class="invalid-feedback">
+      Please provide a valid city.
+    </div>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Teléfono</label>
+        <input class="form-control" type="number" minlength="10" name="telefono" #telefono="ngModel" ngModel placeholder="Ingrese su telefono" required="true">
+        <small *ngIf="!telefono.valid && telefono.touched" class="invalid-feedback d-block">
+          El telefono no es valido
+        </small>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Género</label>
+        <select name="genero" [(ngModel)]="default_option" (change)="dataChanged($event)" class="form-select"
+          aria-label=".form-select example">
+          <option *ngFor="let genero of generos_list" [value]="genero">
+            {{genero}}
+          </option>
+          <option id="default-option" selected value={{default_option}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label" for="date">Fecha de nacimiento</label>
+        <input class="form-control" type="date" name="fecha_nacimiento" (change)="dateChange($event)" ngModel placeholder="Fecha de nacimiento">
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Edad</label>
+        <input class="form-control" type="number" min="0" id="edad_input" name="edad" [(ngModel)]="edad" ngModel placeholder="Edad">
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Estado</label>
+        <select [(ngModel)]="estados"  (change)="dataChangedEstados($event)"
+        class="form-select" aria-label="seleccionar estado" name="estado">
+        <option *ngFor="let estado of estados_list" [value]="estado">
+          {{estado}}
+        </option>
+        <option id="default-option-estados" selected value={{estados}}>-Selecciona una opcion-</option>
+      </select>
+      </div>     
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Municipio</label>
+        <select [(ngModel)]="municipios" (change)="dataChangedMunicipios($event)"
+        class="form-select" aria-label="seleccionar estado" name="municipio" id="select-municipios">
+        <option *ngFor="let municipio of municipios_list" [value]="municipio">
+          {{municipio}}
+        </option>
+        <option id="default-option-municipio" selected value={{municipios}}>-Selecciona una opcion-</option>
+      </select>
+      </div>     
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Nivel de estudios</label>
+        <select [(ngModel)]="estudios" name="nivel_estudios" (change)="dataChangedNivelEstudios($event)"
+          class="form-select" aria-label="seleccionar nivel de estudios" name="nivel_estudios">
+          <option *ngFor="let estudio of estudios_list" [value]="estudio">
+            {{estudio}}
+          </option>
+          <option id="default-option-lvl-est" selected value={{estudios}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">¿Que carrera completó?</label>
+        <select [(ngModel)]="carreras" name="carrera" class="form-select" aria-label="seleccionar carrera"
+          id="estudios_uni" (change)="dataChangedCarrera($event)">
+          <option *ngFor="let carrera of carreras_list" [value]="carrera">
+            {{carrera}}
+          </option>
+          <option id="default-option-carrera" selected value={{carreras}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Ocupación</label>
+        <select [(ngModel)]="ocupaciones" name="ocupacion" class="form-select" aria-label="seleccionar carrera"
+          (change)="dataChangedOcupacion($event)">
+          <option *ngFor="let ocupacion of ocupaciones_list" [value]="ocupacion">
+            {{ocupacion}}
+          </option>
+          <option id="default-option-ocupacion" selected value={{ocupaciones}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Nivel de ingresos (Mensual)</label>
+        <select [(ngModel)]="ingresos" name="nivel_ingresos" class="form-select" aria-label="seleccionar carrera"
+          (change)="dataChangedIngresos($event)">
+          <option *ngFor="let ingreso of ingresos_list" [value]="ingreso">
+            {{ingreso}}
+          </option>
+          <option id="default-option-ingresos" selected value={{ingresos}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">Estado civil</label>
+        <select [(ngModel)]="estado_civil" name="estado_civil" class="form-select" aria-label="seleccionar carrera"
+          (change)="dataChangedEstCiv($event)">
+          <option *ngFor="let estCiv of estado_civil_list" [value]="estCiv">
+            {{estCiv}}
+          </option>
+          <option id="default-option-estCiv" selected value={{estado_civil}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">¿Tiene hijos?</label>
+        <select [(ngModel)]="tiene_hijos" name="tiene_hijos" class="form-select" aria-label="seleccionar tiene hijos"
+          (change)="dataChangedTieneHijos($event)">
+          <option *ngFor="let tiene_hijos of tiene_hijos_list" [value]="tiene_hijos">
+            {{tiene_hijos}}
+          </option>
+          <option id="default-option-tiene_hijos" selected value={{tiene_hijos}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">¿Tiene hijos menores de 18?</label>
+        <select [(ngModel)]="tiene_hijos_menores18" id="hijos_menores" name="tiene_hijos_menores18" class="form-select" aria-label="seleccionar hijos menores 18"
+          (change)="dataChangedTieneHijos($event)">
+          <option *ngFor="let tiene_hijos_menores18 of tiene_hijos_menores18_list" [value]="tiene_hijos_menores18">
+            {{tiene_hijos_menores18}}
+          </option>
+          <option id="default-option-tiene_hijos_menores18" selected value={{tiene_hijos_menores18}}>-Selecciona una opcion-</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">¿Cuántos automóviles tiene en su hogar?</label>
+        <input class="form-control" type="number" min="0" ngModel name="numero_automoviles" placeholder="...">
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">¿Cuenta con internet?</label>
+        <select [(ngModel)]="tiene_internet" name="tiene_internet" class="form-select" aria-label="internet"
+        (change)="dataChangedTieneInternet($event)">
+        <option *ngFor="let tiene_internet of tiene_internet_list" [value]="tiene_internet">
+          {{tiene_internet}}
+        </option>
+        <option id="default-option-tiene_internet" selected value={{tiene_internet}}>-Selecciona una opcion-</option>
+      </select>
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">¿Cuántas personas viven en su hogar?</label>
+        <input class="form-control" type="number" min="0" ngModel name="numero_personas_hogar" placeholder="...">
+      </div>
+      <div class="col-sm-6 col-md-4 form-group mt-2">
+        <label class="form-label">¿Cuántas personas de las que viven en su hogar trabajaron en el último mes?</label>
+        <input class="form-control" type="number" min="0" ngModel name="numero_personas_trabajaron" placeholder="...">
+      </div>
+      <!--
+    -->
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-center mt-3 mb-3">
+      <button class="btn btn-lg submit" type="submit">
+        <span class="text-white">Registrarme</span>
+      </button>
+    </div>
+  </form>

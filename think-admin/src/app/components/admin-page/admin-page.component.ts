@@ -26,10 +26,14 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
   }
 
   public usuarios: Array<any> = [];
-  public edad:any;
+
+
+  public api = 'http://localhost:3000/';
   ngOnInit(): void {
-    this.edad = "19";
-    this.http.get<any>('http://localhost:3000/api/usuarios').subscribe((res:any)=>{
+
+
+
+    this.http.get<any>(this.api+'api/usuarios').subscribe((res:any)=>{
       console.log(res)
     })
 
@@ -37,21 +41,25 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
     this.dtOptions = {
       pageLength: 5,
       ajax: {
-        url: 'http://localhost:3000/api/usuarios',
+        url: this.api+'api/usuarios',
         type: 'GET',
         dataSrc: ""
       },
       columns: [
         {
-          title: "nombre",
+          title: "ID",
+          data: "id_usuario"
+        },
+        {
+          title: "Nombre(s)",
           data: "Nombre"
         },
         {
-          title: "apellido1",
+          title: "Apellido paterno",
           data: "Apellido_1"
         },
         {
-          title: "apellido2",
+          title: "Apellido materno",
           data: "Apellido_2"
         },
         {
@@ -59,15 +67,15 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
           data: "Correo"
         },
         {
-          title: "telefono",
+          title: "Telefono",
           data: "Telefono"
         },
         {
-          title: "genero",
+          title: "Genero",
           data: "Genero"
         },
         {
-          title: "fecha_nacimiento",
+          title: "Fecha de nacimiento",
           data: "Fecha_nacimiento"
         },
         {
@@ -75,57 +83,61 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
           data: "Edad"
         },
         {
-          title: "estado",
+          title: "Estado",
           data: "Estado"
         },
         {
-          title: "municipio",
+          title: "Municipio",
           data: "Municipio"
         },
         {
-          title: "nivel_estudios",
+          title: "Nivel de estudios",
           data: "Nivel_estudios"
         },
         {
-          title: "carrera",
+          title: "Carrera",
           data: "Carrera_completo"
         },
         {
-          title: "ocupacion",
+          title: "Ocupación",
           data: "Ocupacion"
         },
         {
-          title: "nivel_ingresos",
+          title: "Nivel de ingresos",
           data: "Ingresos_mensual"
         },
         {
-          title: "estado_civil",
+          title: "Estado civil",
           data: "Estado_civil"
         },
         {
-          title: "tiene_hijos",
+          title: "Tiene hijos",
           data: "Tiene_hijos"
         },
         {
-          title: "tiene_hijos_menores18",
+          title: "Hijos menores de 18",
           data: "Tiene_hijos_men_18"
         },
         {
-          title: "numero_automoviles",
+          title: "Automoviles hogar",
           data: "Automoviles_hogar"
         },
         {
-          title: "tiene_internet",
+          title: "Cuenta con internet",
           data: "Internet"
         },
         {
-          title: "numero_personas_hogar",
+          title: "Numero de personas en el hogar",
           data: "Personas_hogar"
         },
         {
-          title: "numero_personas_trabajaron",
+          title: "Numero de personas que trabajaron el ultimo mes",
           data: "Personas_hogar_trabajaron"
         },
+        {
+          title: "Acciones",
+          defaultContent: `<button class="btn btn-danger" id="btn-delete" >Eliminar usuario</button>`
+        }
       ]
     };
   }
@@ -165,7 +177,7 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
   }
 
 
-  public removeTask(task: any) {
+  public deleteUser(task: any) {
 
     Swal.fire({
       title: 'Confirmar',

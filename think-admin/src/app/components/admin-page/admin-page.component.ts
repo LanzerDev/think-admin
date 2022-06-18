@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef} from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -8,15 +8,21 @@ import * as $ from 'jquery';
 import { HttpClient } from '@angular/common/http';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 
+
 @Component({
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.css']
 })
 export class AdminPageComponent implements OnInit, AfterViewInit {
+
+  
+
   @ViewChild(DataTableDirective, { static: false })
   public datatableElement: DataTableDirective;
-  public dtOptions: DataTables.Settings = {};
+
+
+  public dtOptions: any = {};
 
   constructor(
     private http: HttpClient,
@@ -25,23 +31,26 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
 
   }
 
+
+
   public usuarios: Array<any> = [];
 
 
-  public api = 'http://localhost:3000/';
+  public api = 'https://formularioapi.shop/';
   ngOnInit(): void {
 
 
 
-    this.http.get<any>(this.api+'api/usuarios').subscribe((res:any)=>{
+    this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
       console.log(res)
     })
 
 
+    const self = this;
     this.dtOptions = {
       pageLength: 5,
       ajax: {
-        url: this.api+'api/usuarios',
+        url: this.api + 'api/usuarios',
         type: 'GET',
         dataSrc: ""
       },
@@ -135,8 +144,8 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
           data: "Personas_hogar_trabajaron"
         },
         {
-          title: "Acciones",
-          defaultContent: `<button class="btn btn-danger" id="btn-delete" >Eliminar usuario</button>`
+          title: "Comentarios del administrador",
+          data: "Comentarios"
         }
       ]
     };
@@ -159,49 +168,118 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-
-
-
-
-  public getUsuarios() {
-    if (localStorage.getItem("usuarios") === null) {
-      this.usuarios = []
-    } else {
-      this.usuarios = JSON.parse(localStorage.getItem("usuarios")!)
-    }
-  }
-
-
   public getEdad(fecha_nacimiento: any) {
     return moment().diff(fecha_nacimiento, 'years')
   }
 
+  public id_eliminar: any;
+  public inputDelete(e: any) {
+    this.id_eliminar = e.target.value
+  }
 
-  public deleteUser(task: any) {
+  public nombre_user: any = "";
+  public apellido_user: any = "";
+  public correo_user: any = "";
+  public comentarios: any = "";
 
-    Swal.fire({
-      title: 'Confirmar',
-      text: '¿Desea eliminar a este usuario?',
-      icon: 'error',
-      confirmButtonText: 'Eliminar',
-      showCancelButton: true,
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
+  public usuario_comentario: any;
+  public mostrarUsuario(e: any) {
+    this.usuario_comentario = e.target.value;
+    this._usuariosService.getUser(e.target.value).subscribe((res: any) => {
+      if (res.usuario.length > 0) {
+        this.nombre_user = res.usuario[0].Nombre;
+        this.apellido_user = res.usuario[0].Apellido_1;
+        this.correo_user = res.usuario[0].Correo;
+        this.comentarios = res.usuario[0].Comentarios;
+      } else {
+        this.nombre_user = "";
+        this.apellido_user = "";
+        this.correo_user = "";
+        this.comentarios = "";
+      }
+    })
+  }
+
+  public comentario_value: any;
+  public comentario_request = {
+    "Comentarios": ""
+  }
+  public guardarComentario() {
+    this.comentario_value = document.getElementById('comentario-box');
+    this.comentario_request.Comentarios = this.comentario_value.value;
+    this._usuariosService.saveComentario(this.usuario_comentario, this.comentario_request).subscribe((res: any) => {
+      if(res.message){
         Swal.fire({
           icon: 'success',
-          title: 'Usuario eliminado',
+          title: 'Listo!',
+          text: `Comentario guardado`,
+          confirmButtonText: 'ok',
+          timer: 2000
+        })
+        setTimeout(()=>{
+          location.reload()
+        },2100)
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Ups!',
+          text: `Ocurrio un error`,
+          confirmButtonText: 'ok',
+        })
+      }
+    })
+  }
+
+
+  public nombre_del: any;
+  public apellido1_del: any;
+  public apellido2_del: any;
+  public id_buscar: any;
+
+  public getUsers(callback: any) {
+    this._usuariosService.getUser(this.id_eliminar).subscribe((res: any) => {
+      if (res.usuario.length > 0) {
+        this.nombre_del = res.usuario[0].Nombre;
+        this.apellido1_del = res.usuario[0].Apellido_1;
+        this.apellido2_del = res.usuario[0].Apellido_2;
+        callback(this.nombre_del, this.apellido1_del, this.apellido2_del)
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Este usuario no existe',
           confirmButtonText: 'ok',
           timer: 1700,
         });
-        for (let i = 0; i < this.usuarios.length; i++) {
-          if (task == this.usuarios[i]) {
-            this.usuarios.splice(i, 1);
-            localStorage.setItem("usuarios", JSON.stringify(this.usuarios))
-            console.log(this.usuarios)
-          }
-        }
       }
-    });
+    })
+  }
+
+  public deleteUser() {
+    this.getUsers((nombre: any, apellido1_del: any, apellido2_del: any) => {
+      Swal.fire({
+        title: 'Confirmar',
+        text: `¿Desea eliminar a ${nombre + " " + apellido1_del + " " + apellido2_del}?`,
+        icon: 'warning',
+        confirmButtonText: 'Eliminar',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Usuario eliminado',
+            confirmButtonText: 'ok',
+            timer: 2100,
+          });
+          this._usuariosService.deleteUser(this.id_eliminar).subscribe((res: any) => {
+            console.log(res)
+          })
+          setTimeout(()=>{
+            location.reload()
+          },2200)
+        }
+      });
+    })
+
   }
 }

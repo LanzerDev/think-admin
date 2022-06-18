@@ -6,8 +6,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class UsuariosService {
 
-  public api = 'http://localhost:3000/';
-
+  public api = 'https://formularioapi.shop/'; 
+ // public api = 'localhost:3000/';
   constructor(
     public _http: HttpClient,
   ) { }
@@ -22,4 +22,18 @@ export class UsuariosService {
     return this._http.post(this.api+'api/newUser',form,{headers: headers})
   }
 
+  public getUser(id:any){
+    let headers = new HttpHeaders().set('content-type', 'application/json')
+    return this._http.get(this.api+`api/usuarios/${id}`, {headers: headers})
+  }
+
+  public deleteUser(id:any){
+    let headers = new HttpHeaders().set('content-type', 'application/json')
+    return this._http.delete(this.api+`api/borrarusuario/${id}`, {headers: headers})
+  }
+  public saveComentario(id:any, comentario:any){
+    let headers = new HttpHeaders().set('content-type', 'application/json')
+    .set('Access-Control-Allow-Origin', '*')
+    return this._http.put(this.api+`api/comentario/${id}`, comentario, {headers: headers})
+  }
 }

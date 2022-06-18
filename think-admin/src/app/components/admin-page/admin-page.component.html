@@ -27,8 +27,89 @@
           <th><input type="text" placeholder="Buscar por tiene internet" name="tiene_internet" /></th>
           <th><input type="text" placeholder="Buscar por numero personas hogar" name="numero_personas_hogar" /></th>
           <th><input type="text" placeholder="Buscar por numero personas trabajaron" name="numero_personas_trabajaron" /></th>
+          <th><input type="text" placeholder="Buscar comentarios" name="Comentarios" /></th>
         </tr>
       </tfoot>
     </table>
   </div>
 </div>
+<div class="container mb-3">
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-primary mt-2" 
+      data-bs-toggle="modal" data-bs-target="#agregarComentario">Agregar comentarios a usuario</button>
+    </div>
+    <div class="col">
+      <button class="btn btn-danger float-end mt-2" 
+      data-bs-toggle="modal" data-bs-target="#eliminarUsuario">Eliminar usuario</button>
+    </div>
+  </div>
+</div>
+
+<!--Agregar comentario modal-->
+
+<div class="modal fade" id="agregarComentario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar comentario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12">
+          <label class="form-label mb-2">insertar id del usuario para agregar o ver comentarios</label>
+          <input type="number" class="form-control mb-2"
+          (keyup)="mostrarUsuario($event)"
+          placeholder="insertar id">
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label">Nombre</label>
+            <input type="text" [value]="nombre_user" disabled class="form-control mb-2">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Apellido</label>
+            <input type="text" [value]="apellido_user" disabled class="form-control mb-2">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Correo</label>
+            <input type="email" [value]="correo_user" disabled class="form-control mb-2">
+          </div>
+        </div>
+        <div class="form-floating">
+          <textarea class="form-control" [(value)]="comentarios" style="min-height: 100px;"
+           placeholder="Leave a comment here" id="comentario-box"></textarea>
+          <label for="comentario-box">Comentarios</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarComentario()">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="eliminarUsuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Eliminar usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="form-label mb-2">id usuario</label>
+            <input type="number" class="form-control" (keyup)="inputDelete($event)" placeholder="insertar id del usuario a eliminar">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="deleteUser()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+

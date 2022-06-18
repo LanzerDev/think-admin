@@ -10,7 +10,7 @@ td {
     text-align: center;
 }
 
-  .hid{
+table .datatable .row-border  {
     height: 50px;
     overflow:hidden;
     -webkit-line-clamp: 3;
@@ -18,7 +18,6 @@ td {
     -webkit-box-orient: vertical;
     overflow-y: auto;
 }
-
 
 
 

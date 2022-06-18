@@ -17,6 +17,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "optimization": {
+              "scripts": true,
+              "styles": {
+                "minify": true,
+                "inlineCritical": false
+              },
+              "fonts": true
+            },
             "outputPath": "dist/think-admin",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -44,12 +52,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "5mb"
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "500kb",
-                  "maximumError": "5mb"
+                  "maximumError": "10mb"
                 }
               ],
               "fileReplacements": [
@@ -80,7 +88,7 @@
             "development": {
               "browserTarget": "think-admin:build:development"
             }
-          },
+          }, 
           "defaultConfiguration": "development"
         },
         "extract-i18n": {

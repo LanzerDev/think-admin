@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef} from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef} from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -27,21 +27,21 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpClient,
     public _usuariosService: UsuariosService,
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
   ) {
-
   }
 
-
+  public deleteButton:any;
+  public commentButton:any;
 
   public usuarios: Array<any> = [];
-
 
   public api = 'https://formularioapi.shop/';
   ngOnInit(): void {
 
-
-
     this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
+      this.usuarios = res;
       console.log(res)
     })
 
@@ -146,11 +146,51 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
         {
           title: "Comentarios del administrador",
           data: "Comentarios"
+        },
+        {
+          title: "Action",
+          data: "id_usuario",
+          render: function (data:any, type:any, row:any, meta:any){
+            return `
+                  <button class='btn btn-danger delete-btn' id="${data}">
+                       <img src="../assets/trash.svg" width="22" height="22" style="pointer-events: none;"/>
+                  </button>
+                  <button class='btn btn-primary comment-btn' data-bs-toggle="modal" data-bs-target="#agregarComentario" id="${data}">
+                       <img src="../assets/pen.svg" width="22" height="22" style="pointer-events: none;"/>
+                  </button>
+                   `
+          }
         }
       ]
     };
-  }
 
+//borrar usuario boton
+    setTimeout(()=>{
+      this.deleteButton = document.getElementsByClassName("delete-btn")
+      for(let i = 0; i < this.usuarios.length; i++){
+        this.deleteButton[i].addEventListener("click", (e:any)=>{
+          const id = e.target.getAttribute("id");
+          this.borrarUsuario(id);
+        })
+      }
+    },1500);
+// agregar comentario boton
+    setTimeout(()=>{
+      this.commentButton = document.getElementsByClassName("comment-btn")
+      for(let i = 0; i < this.usuarios.length; i++){
+        this.commentButton[i].addEventListener("click", (e:any)=>{
+          const id = e.target.getAttribute("id");
+          this.usuario_comentario = id;
+          this.comentarios = ""
+          this.getComentarioUser(id);
+        })
+      }
+    },1500)
+
+
+  } 
+
+// generacion de la tabla
   ngAfterViewInit(): void {
     this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.columns().every(function () {
@@ -160,7 +200,6 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
             that
               .search($(this).val().toString())
               .draw();
-
           }
           console.log($(this).val().toString())
         });
@@ -168,38 +207,8 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public getEdad(fecha_nacimiento: any) {
-    return moment().diff(fecha_nacimiento, 'years')
-  }
-
-  public id_eliminar: any;
-  public inputDelete(e: any) {
-    this.id_eliminar = e.target.value
-  }
-
-  public nombre_user: any = "";
-  public apellido_user: any = "";
-  public correo_user: any = "";
   public comentarios: any = "";
-
   public usuario_comentario: any;
-  public mostrarUsuario(e: any) {
-    this.usuario_comentario = e.target.value;
-    this._usuariosService.getUser(e.target.value).subscribe((res: any) => {
-      if (res.usuario.length > 0) {
-        this.nombre_user = res.usuario[0].Nombre;
-        this.apellido_user = res.usuario[0].Apellido_1;
-        this.correo_user = res.usuario[0].Correo;
-        this.comentarios = res.usuario[0].Comentarios;
-      } else {
-        this.nombre_user = "";
-        this.apellido_user = "";
-        this.correo_user = "";
-        this.comentarios = "";
-      }
-    })
-  }
-
   public comentario_value: any;
   public comentario_request = {
     "Comentarios": ""
@@ -230,56 +239,41 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
     })
   }
 
-
-  public nombre_del: any;
-  public apellido1_del: any;
-  public apellido2_del: any;
-  public id_buscar: any;
-
-  public getUsers(callback: any) {
-    this._usuariosService.getUser(this.id_eliminar).subscribe((res: any) => {
-      if (res.usuario.length > 0) {
-        this.nombre_del = res.usuario[0].Nombre;
-        this.apellido1_del = res.usuario[0].Apellido_1;
-        this.apellido2_del = res.usuario[0].Apellido_2;
-        callback(this.nombre_del, this.apellido1_del, this.apellido2_del)
-      } else {
+  public borrarUsuario(id:any){
+    Swal.fire({
+      title: 'Confirmar',
+      text: `¿Desea eliminar a este usuario?`,
+      icon: 'warning',
+      confirmButtonText: 'Eliminar',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
         Swal.fire({
-          icon: 'error',
-          title: 'Este usuario no existe',
+          icon: 'success',
+          title: 'Usuario eliminado',
           confirmButtonText: 'ok',
-          timer: 1700,
+          timer: 2100,
         });
+        this._usuariosService.deleteUser(id).subscribe((res: any) => {
+          console.log(res)
+        })
+        setTimeout(()=>{
+          location.reload()
+        },2200)
       }
+    });
+  }
+
+  public getComentarioUser(id:any){
+    this._usuariosService.getUser(id).subscribe((res:any)=>{
+      console.log(res.usuario[0].Comentarios)
+      this.comentarios = res.usuario[0].Comentarios
     })
   }
 
-  public deleteUser() {
-    this.getUsers((nombre: any, apellido1_del: any, apellido2_del: any) => {
-      Swal.fire({
-        title: 'Confirmar',
-        text: `¿Desea eliminar a ${nombre + " " + apellido1_del + " " + apellido2_del}?`,
-        icon: 'warning',
-        confirmButtonText: 'Eliminar',
-        showCancelButton: true,
-        cancelButtonText: 'Cancelar',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Usuario eliminado',
-            confirmButtonText: 'ok',
-            timer: 2100,
-          });
-          this._usuariosService.deleteUser(this.id_eliminar).subscribe((res: any) => {
-            console.log(res)
-          })
-          setTimeout(()=>{
-            location.reload()
-          },2200)
-        }
-      });
-    })
-
+  public getEdad(fecha_nacimiento: any) {
+    return moment().diff(fecha_nacimiento, 'years')
   }
+
 }

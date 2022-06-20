@@ -6,8 +6,11 @@ import { NavComponent } from './components/navbar/nav.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataTablesModule } from 'angular-datatables';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { AdminPageComponent } from './components/admin-page/admin-page.component';
+import { NgForm } from '@angular/forms';
+import { AuthModule } from './auth/auth.module';
+
 
 
 
@@ -15,17 +18,17 @@ import { AdminPageComponent } from './components/admin-page/admin-page.component
   declarations: [
     AppComponent,
     NavComponent,
-    AdminPageComponent
+    AdminPageComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    NgbModule,
-    DataTablesModule
+    DataTablesModule,
+    AuthModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

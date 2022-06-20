@@ -7,7 +7,7 @@ import { SweetAlertIcon } from 'sweetalert2';
 import * as $ from 'jquery';
 import { HttpClient } from '@angular/common/http';
 import { UsuariosService } from 'src/app/services/usuarios.service';
-
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-admin-page',
@@ -29,12 +29,13 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
     public _usuariosService: UsuariosService,
     private elementRef: ElementRef,
     private renderer: Renderer2,
+    public authService: AuthService
   ) {
+    this.usuarioActual()
   }
 
   public deleteButton:any;
   public commentButton:any;
-
   public usuarios: Array<any> = [];
 
   public api = 'https://formularioapi.shop/';
@@ -42,7 +43,6 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
 
     this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
       this.usuarios = res;
-      console.log(res)
     })
 
 
@@ -274,6 +274,11 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
 
   public getEdad(fecha_nacimiento: any) {
     return moment().diff(fecha_nacimiento, 'years')
+  }
+
+  public actual_user:any;
+  public usuarioActual(){
+   this.actual_user = this.authService.getActualUser()
   }
 
 }

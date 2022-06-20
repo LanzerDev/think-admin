@@ -1,0 +1,17 @@
+@media (max-width: 10000px) {
+    .query{
+        width: 30%;
+    }
+}
+
+@media (max-width:1000px) {
+    .query{
+        width: 50%;
+    }
+}
+
+@media (max-width: 650px) {
+    .query{
+        width: 75%;
+    }
+}

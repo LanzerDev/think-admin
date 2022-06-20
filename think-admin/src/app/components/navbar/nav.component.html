@@ -2,7 +2,7 @@
   <div class="container-fluid"> 
     <a class="navbar-brand"><img class="" src="https://i1.wp.com/somosthink.com/wp-content/uploads/2017/05/THINK-LOGO.jpg?fit=513%2C513&ssl=1" style="width: 80px;" alt="" srcset=""></a>
       <form class="d-flex">
-          <button class="btn think-color border-dark text-light fw-bold" (click)="goToLink('https://somosthink.com/')">Quienes somos?</button>
+        <button *ngIf="isloged" class="btn think-color text-light" (click)="cerrarSesion()">Cerrar sesion</button>
       </form>
   </div>
 </nav>

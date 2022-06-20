@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -7,10 +10,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavComponent implements OnInit {
 
-  constructor() { }
+  constructor(public authService: AuthService, public router: Router) { }
 
   ngOnInit(): void {
+    this.loged()
   }
 
-  goToLink(url: string) { window.open(url, "_blank"); }
+  public isloged:any;
+
+  public cerrarSesion(){
+    this.authService.cerrarSesion()
+    this.router.navigate(['/login'])
+   // location.reload()
+  }
+
+  public loged(){
+    this.isloged = this.authService.getUserLoged()
+    return this.loged;
+  }
+
+
 }

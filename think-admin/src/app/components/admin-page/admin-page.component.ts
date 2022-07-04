@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef} from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef, OnChanges} from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.css']
 })
-export class AdminPageComponent implements OnInit, AfterViewInit {
+export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
 
   
 
@@ -33,22 +33,25 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
   ) {
     this.usuarioActual()
   }
-
+  
   public deleteButton:any;
   public commentButton:any;
   public usuarios: Array<any> = [];
-
   public api = 'https://formularioapi.shop/';
-  ngOnInit(): void {
 
+
+  
+  ngOnChanges(){
+    console.log("change")
+  } 
+
+  ngOnInit(): void {
     this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
       this.usuarios = res;
     })
-
-
     const self = this;
     this.dtOptions = {
-      pageLength: 5,
+      pageLength: 10,
       ajax: {
         url: this.api + 'api/usuarios',
         type: 'GET',
@@ -98,6 +101,18 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
         {
           title: "Municipio",
           data: "Municipio"
+        },
+        {
+          title: "Calle",
+          data: "Calle"
+        },
+        {
+          title: "Numero",
+          data: "Numero"
+        },
+        {
+          title: "Colonia",
+          data: "Colonia"
         },
         {
           title: "Nivel de estudios",
@@ -161,31 +176,40 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
                    `
           }
         }
+      ],
+      dom: 'Bfrtip',
+      // Configure the buttons
+      buttons: [
+        'excel'
       ]
     };
 
-//borrar usuario boton
-    setTimeout(()=>{
-      this.deleteButton = document.getElementsByClassName("delete-btn")
-      for(let i = 0; i < this.usuarios.length; i++){
-        this.deleteButton[i].addEventListener("click", (e:any)=>{
-          const id = e.target.getAttribute("id");
-          this.borrarUsuario(id);
-        })
-      }
-    },1500);
-// agregar comentario boton
-    setTimeout(()=>{
-      this.commentButton = document.getElementsByClassName("comment-btn")
-      for(let i = 0; i < this.usuarios.length; i++){
-        this.commentButton[i].addEventListener("click", (e:any)=>{
-          const id = e.target.getAttribute("id");
-          this.usuario_comentario = id;
-          this.comentarios = ""
-          this.getComentarioUser(id);
-        })
-      }
-    },1500)
+
+    setInterval(()=>{
+      setTimeout(()=>{
+        this.deleteButton = document.getElementsByClassName("delete-btn")
+        for(let i = 0; i < this.deleteButton.length; i++){
+            this.deleteButton[i].addEventListener("click", (e:any)=>{
+            const id = e.target.getAttribute("id");
+            this.borrarUsuario(id);
+          })
+        }
+      },1000);
+      setTimeout(()=>{
+        this.commentButton = document.getElementsByClassName("comment-btn")
+        for(let i = 0; i < this.commentButton.length; i++){
+          if(this.commentButton){
+            this.commentButton[i].addEventListener("click", (e:any)=>{
+              const id = e.target.getAttribute("id");
+              this.usuario_comentario = id;
+              this.comentarios = ""
+              this.getComentarioUser(id);
+            })
+          }
+        }
+      },1000)
+    },4000)
+
 
 
   } 
@@ -267,7 +291,6 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
 
   public getComentarioUser(id:any){
     this._usuariosService.getUser(id).subscribe((res:any)=>{
-      console.log(res.usuario[0].Comentarios)
       this.comentarios = res.usuario[0].Comentarios
     })
   }

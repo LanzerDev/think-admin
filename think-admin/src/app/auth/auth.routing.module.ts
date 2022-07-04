@@ -6,10 +6,7 @@ import { GuardGuard } from '../guards/guard.guard';
 import { CanActivate } from '@angular/router';
 
 
-const routes: Routes = [
-    { path: 'login', component: LoginComponent},
-    { path: 'login/admin', canActivate:[GuardGuard], component: AdminPageComponent, pathMatch: 'full'}
-];
+const routes: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

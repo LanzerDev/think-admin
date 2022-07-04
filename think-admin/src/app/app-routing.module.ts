@@ -6,9 +6,10 @@ import { GuardGuard } from './guards/guard.guard';
 import { CanActivate } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch:'full' },
+  { path: '', redirectTo: 'admin', pathMatch:'full'},
+  { path: 'admin', canActivate:[GuardGuard], component: AdminPageComponent},
   { path: 'login', component: LoginComponent},
-  { path: 'login/admin', canActivate:[GuardGuard], component: AdminPageComponent, pathMatch: 'full'}
+  { path: 'login/admin', canActivate:[GuardGuard], component: AdminPageComponent},
 ];
 
 @NgModule({

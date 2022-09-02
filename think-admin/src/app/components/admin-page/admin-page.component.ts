@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.css']
 })
-export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
+export class AdminPageComponent implements OnInit, AfterViewInit {
 
   
 
@@ -37,13 +37,8 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
   public deleteButton:any;
   public commentButton:any;
   public usuarios: Array<any> = [];
-  public api = 'https://formularioapi.shop/';
+  public api = 'https://thinkform.shop/';
 
-
-  
-  ngOnChanges(){
-    console.log("change")
-  } 
 
   ngOnInit(): void {
     this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
@@ -51,7 +46,11 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
     })
     const self = this;
     this.dtOptions = {
-      pageLength: 10,
+      pageLength: 5,
+      lengthMenu: [
+          [10,25,50,100,1000],
+          [10,25,50,100,'Todos'],
+      ],
       ajax: {
         url: this.api + 'api/usuarios',
         type: 'GET',
@@ -177,7 +176,7 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
           }
         }
       ],
-      dom: 'Bfrtip',
+      dom: 'Blfrtip',
       // Configure the buttons
       buttons: [
         'excel'
@@ -225,7 +224,6 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
               .search($(this).val().toString())
               .draw();
           }
-          console.log($(this).val().toString())
         });
       });
     });
@@ -280,7 +278,7 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
           timer: 2100,
         });
         this._usuariosService.deleteUser(id).subscribe((res: any) => {
-          console.log(res)
+          //
         })
         setTimeout(()=>{
           location.reload()

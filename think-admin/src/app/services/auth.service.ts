@@ -7,7 +7,7 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class AuthService {
-  AUTH_SERVER: string = 'https://formularioapi.shop/api';
+  AUTH_SERVER: string = 'https://thinkform.shop/api';
 
   public userL:any;
   authSubject = new BehaviorSubject(false);

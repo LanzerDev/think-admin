@@ -23,21 +23,10 @@ table .datatable .row-border  {
     background-color: #93c83d;
 }
 
-.dt-button .buttons-excel .buttons-html5{
-    margin-left: 100px;
-}
-.dt-buttons{
-    margin-left: 100px;
-}
-.buttons-excel .buttons-html5{
-    margin-left: 100px;
-}
-.buttons-html5{
-    margin-left: 100px;
-}
-
-.button{
-    margin-left: 100px;
+form{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
 }
 
 

@@ -5,7 +5,7 @@
 <br>
 <div class="container w-100">
   <div class="table-responsive">
-    <table datatable [dtOptions]="dtOptions" class="row-border hover">
+    <table datatable [dtOptions]="dtOptions" class="row-border hover" style="margin-top: 20px;">
       <tfoot>
         <tr>
           <th><input type="text" placeholder="Buscar por ID" name="id" /></th>
@@ -39,6 +39,20 @@
       </tfoot>
     </table>
   </div>
+  <form (submit)="filterById()">
+    <label>
+      Edad minima
+      <input type="number" name="min" id="min" [(ngModel)]="min" />
+    </label>
+    <label style="margin-left: 20px;">
+      Edad maxima
+      <input type="number" name="max" id="max" [(ngModel)]="max" />
+    </label>
+    <button class="btn btn-primary" style="margin-left: 20px;" type="submit">Filtrar por edad</button>
+  </form>
+  <br>
+  <br>
+  <br>
 </div>
 
 <!--Agregar comentario modal-->

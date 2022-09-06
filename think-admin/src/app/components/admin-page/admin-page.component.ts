@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef, OnChanges} from '@angular/core';
+import { AfterViewInit, OnDestroy, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef, OnChanges} from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -14,13 +14,14 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.css']
 })
-export class AdminPageComponent implements OnInit, AfterViewInit {
+export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   
 
   @ViewChild(DataTableDirective, { static: false })
   public datatableElement: DataTableDirective;
-
+  min: number;
+  max: number;
 
   public dtOptions: any = {};
 
@@ -41,6 +42,18 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit(): void {
+
+    jQuery.fn['dataTable'].ext.search.push((settings:any, data:any, dataIndex:any) => {
+      const id = parseFloat(data[8]) || 0; // use data for the id column
+      if ((isNaN(this.min) && isNaN(this.max)) ||
+        (isNaN(this.min) && id <= this.max) ||
+        (this.min <= id && isNaN(this.max)) ||
+        (this.min <= id && id <= this.max)) {
+        return true;
+      }
+      return false;
+    });
+
     this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
       this.usuarios = res;
     })
@@ -209,7 +222,18 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
       },1000)
     },4000)
 
-
+    setTimeout(()=>{
+      document.querySelector<HTMLElement>(".dt-buttons").style.display = "flex";
+      document.querySelector<HTMLElement>(".dt-buttons").style.justifyContent = "center";
+      document.querySelector<HTMLElement>(".dt-buttons").style.margin = "5px";
+      document.querySelector<HTMLElement>(".dt-button").style.backgroundColor = "#93c83d";
+      document.querySelector<HTMLElement>(".dt-button").style.color = "white";
+      document.querySelector<HTMLElement>(".dt-button").style.borderRadius = "5px";
+      document.querySelector<HTMLElement>(".dt-button").style.borderStyle = "none";
+      document.querySelector<HTMLElement>(".dt-button").style.width = "125px";
+      document.querySelector<HTMLElement>(".dt-button").style.height = "35px";
+      document.querySelector<HTMLElement>(".dt-button").textContent = "Descargar excel";
+    }, 200)
 
   } 
 
@@ -302,4 +326,16 @@ export class AdminPageComponent implements OnInit, AfterViewInit {
    this.actual_user = this.authService.getActualUser()
   }
 
+  ngOnDestroy(): void {
+    // We remove the last function in the global ext search array so we do not add the fn each time the component is drawn
+    // /!\ This is not the ideal solution as other components may add other search function in this array, so be careful when
+    // handling this global variable
+    $.fn['dataTable'].ext.search.pop();
+  }
+
+  filterById(): void {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.draw();
+    });
+  }
 }

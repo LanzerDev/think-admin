@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef, OnChanges} from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef, OnChanges, OnDestroy} from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -8,19 +8,21 @@ import * as $ from 'jquery';
 import { HttpClient } from '@angular/common/http';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { Subject } from 'rxjs';
+import { ADTSettings } from 'angular-datatables/src/models/settings';
 
 @Component({
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
   styleUrls: ['./admin-page.component.css']
 })
-export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
+export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   
 
   @ViewChild(DataTableDirective, { static: false })
   public datatableElement: DataTableDirective;
-
+  dtTrigger: Subject<any> = new Subject();
 
   public dtOptions: any = {};
 
@@ -37,13 +39,8 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
   public deleteButton:any;
   public commentButton:any;
   public usuarios: Array<any> = [];
-  public api = 'https://formularioapi.shop/';
-
-
-  
-  ngOnChanges(){
-    console.log("change")
-  } 
+  public api = 'https://thinkform.shop/';
+  public tableLength:any = 5;
 
   ngOnInit(): void {
     this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
@@ -51,7 +48,11 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
     })
     const self = this;
     this.dtOptions = {
-      pageLength: 10,
+      bLengthChange: true,
+      info: true,
+      searching: true,
+      pageLength: 5,
+      lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Todos"]],
       ajax: {
         url: this.api + 'api/usuarios',
         type: 'GET',
@@ -176,12 +177,13 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
                    `
           }
         }
-      ],
-      dom: 'Bfrtip',
-      // Configure the buttons
-      buttons: [
-        'excel'
       ]
+
+      // dom: 'B<"top"i>rt<"bottom"flp><"clear">',
+      // // Configure the buttons
+      // buttons: [
+      //   'excel'
+      // ]
     };
 
 
@@ -215,19 +217,85 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
   } 
 
 // generacion de la tabla
-  ngAfterViewInit(): void {
+ngAfterViewInit(): void {
+    this.dtTrigger.next(void 0);
     this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.columns().every(function () {
         const that = this;
         $('input', this.footer()).on('keyup change', function () {
           if (that.search() !== $(this).val()) {
             that
-              .search($(this).val().toString())
-              .draw();
+            .search($(this).val().toString())
+            .draw();
           }
-          console.log($(this).val().toString())
+         // console.log($(this).val().toString())
         });
       });
+    });
+    
+  }
+
+  tableRows(e:any){
+    console.log(e.target.value)
+    this.tableLength = e.target.value;
+    console.log(this.tableLength)
+    this.rerender()
+  }
+
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+  }
+
+  rerender(): void {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(void 0);
+    });
+  }
+
+  
+  public getComentarioUser(id:any){
+    this._usuariosService.getUser(id).subscribe((res:any)=>{
+      this.comentarios = res.usuario[0].Comentarios
+    })
+  }
+
+  public getEdad(fecha_nacimiento: any) {
+    return moment().diff(fecha_nacimiento, 'years')
+  }
+
+  public actual_user:any;
+  public usuarioActual(){
+   this.actual_user = this.authService.getActualUser()
+  }
+
+  
+  public borrarUsuario(id:any){
+    Swal.fire({
+      title: 'Confirmar',
+      text: `¿Desea eliminar a este usuario?`,
+      icon: 'warning',
+      confirmButtonText: 'Eliminar',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuario eliminado',
+          confirmButtonText: 'ok',
+          timer: 2100,
+        });
+        this._usuariosService.deleteUser(id).subscribe((res: any) => {
+          console.log(res)
+        })
+        setTimeout(()=>{
+          location.reload()
+        },2200)
+      }
     });
   }
 
@@ -261,47 +329,6 @@ export class AdminPageComponent implements OnInit, OnChanges, AfterViewInit {
         })
       }
     })
-  }
-
-  public borrarUsuario(id:any){
-    Swal.fire({
-      title: 'Confirmar',
-      text: `¿Desea eliminar a este usuario?`,
-      icon: 'warning',
-      confirmButtonText: 'Eliminar',
-      showCancelButton: true,
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Usuario eliminado',
-          confirmButtonText: 'ok',
-          timer: 2100,
-        });
-        this._usuariosService.deleteUser(id).subscribe((res: any) => {
-          console.log(res)
-        })
-        setTimeout(()=>{
-          location.reload()
-        },2200)
-      }
-    });
-  }
-
-  public getComentarioUser(id:any){
-    this._usuariosService.getUser(id).subscribe((res:any)=>{
-      this.comentarios = res.usuario[0].Comentarios
-    })
-  }
-
-  public getEdad(fecha_nacimiento: any) {
-    return moment().diff(fecha_nacimiento, 'years')
-  }
-
-  public actual_user:any;
-  public usuarioActual(){
-   this.actual_user = this.authService.getActualUser()
   }
 
 }

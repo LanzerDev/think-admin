@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class UsuariosService {
 
-  public api = 'https://formularioapi.shop/'; 
+  public api = 'https://thinkform.shop/'; 
  // public api = 'localhost:3000/';
   constructor(
     public _http: HttpClient,

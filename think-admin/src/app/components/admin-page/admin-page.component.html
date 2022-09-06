@@ -1,11 +1,11 @@
 <app-nav></app-nav>
-  <h3 class="text-center">Tabla usuarios</h3>
-  <br>
-  <p class="text-center">Sesión actual: <strong> {{actual_user}} </strong></p>
+<h3 class="text-center">Tabla usuarios</h3>
+<br>
+<p class="text-center">Sesión actual: <strong> {{actual_user}} </strong></p>
 <br>
 <div class="container w-100">
   <div class="table-responsive">
-    <table datatable [dtOptions]="dtOptions" class="row-border hover">
+    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
       <tfoot>
         <tr>
           <th><input type="text" placeholder="Buscar por ID" name="id" /></th>
@@ -32,9 +32,10 @@
           <th><input type="text" placeholder="Buscar por numero automoviles" name="numero_automoviles" /></th>
           <th><input type="text" placeholder="Buscar por tiene internet" name="tiene_internet" /></th>
           <th><input type="text" placeholder="Buscar por numero personas hogar" name="numero_personas_hogar" /></th>
-          <th><input type="text" placeholder="Buscar por numero personas trabajaron" name="numero_personas_trabajaron" /></th>
+          <th><input type="text" placeholder="Buscar por numero personas trabajaron"
+              name="numero_personas_trabajaron" /></th>
           <th><input type="text" placeholder="Buscar comentarios" name="Comentarios" /></th>
-          <th><input type="text" style="visibility: hidden;" placeholder="" name="Acciones"/></th>
+          <th><input type="text" style="visibility: hidden;" placeholder="" name="Acciones" /></th>
         </tr>
       </tfoot>
     </table>
@@ -43,7 +44,8 @@
 
 <!--Agregar comentario modal-->
 
-<div class="modal fade" id="agregarComentario" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="agregarComentario" data-bs-backdrop="static" tabindex="-1"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -53,7 +55,7 @@
       <div class="modal-body">
         <div class="form-floating">
           <textarea class="form-control" [(value)]="comentarios" style="min-height: 100px;"
-           placeholder="Leave a comment here" id="comentario-box"></textarea>
+            placeholder="Leave a comment here" id="comentario-box"></textarea>
           <label for="comentario-box">Comentarios</label>
         </div>
       </div>
@@ -64,4 +66,3 @@
     </div>
   </div>
 </div>
-

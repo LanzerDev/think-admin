@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef, OnChanges, OnDestroy} from '@angular/core';
+import { AfterViewInit, OnDestroy, Component, Inject, OnInit, ViewChild, TemplateRef, Renderer2, ElementRef, OnChanges} from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -22,7 +22,8 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(DataTableDirective, { static: false })
   public datatableElement: DataTableDirective;
-  dtTrigger: Subject<any> = new Subject();
+  min: number;
+  max: number;
 
   public dtOptions: any = {};
 
@@ -40,19 +41,30 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
   public commentButton:any;
   public usuarios: Array<any> = [];
   public api = 'https://thinkform.shop/';
-  public tableLength:any = 5;
 
   ngOnInit(): void {
+
+    jQuery.fn['dataTable'].ext.search.push((settings:any, data:any, dataIndex:any) => {
+      const id = parseFloat(data[8]) || 0; // use data for the id column
+      if ((isNaN(this.min) && isNaN(this.max)) ||
+        (isNaN(this.min) && id <= this.max) ||
+        (this.min <= id && isNaN(this.max)) ||
+        (this.min <= id && id <= this.max)) {
+        return true;
+      }
+      return false;
+    });
+
     this.http.get<any>(this.api + 'api/usuarios').subscribe((res: any) => {
       this.usuarios = res;
     })
     const self = this;
     this.dtOptions = {
-      bLengthChange: true,
-      info: true,
-      searching: true,
       pageLength: 5,
-      lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Todos"]],
+      lengthMenu: [
+          [10,25,50,100,1000],
+          [10,25,50,100,'Todos'],
+      ],
       ajax: {
         url: this.api + 'api/usuarios',
         type: 'GET',
@@ -177,6 +189,11 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
                    `
           }
         }
+      ],
+      dom: 'Blfrtip',
+      // Configure the buttons
+      buttons: [
+        'excel'
       ]
 
       // dom: 'B<"top"i>rt<"bottom"flp><"clear">',
@@ -212,7 +229,18 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
       },1000)
     },4000)
 
-
+    setTimeout(()=>{
+      document.querySelector<HTMLElement>(".dt-buttons").style.display = "flex";
+      document.querySelector<HTMLElement>(".dt-buttons").style.justifyContent = "center";
+      document.querySelector<HTMLElement>(".dt-buttons").style.margin = "5px";
+      document.querySelector<HTMLElement>(".dt-button").style.backgroundColor = "#93c83d";
+      document.querySelector<HTMLElement>(".dt-button").style.color = "white";
+      document.querySelector<HTMLElement>(".dt-button").style.borderRadius = "5px";
+      document.querySelector<HTMLElement>(".dt-button").style.borderStyle = "none";
+      document.querySelector<HTMLElement>(".dt-button").style.width = "125px";
+      document.querySelector<HTMLElement>(".dt-button").style.height = "35px";
+      document.querySelector<HTMLElement>(".dt-button").textContent = "Descargar excel";
+    }, 200)
 
   } 
 
@@ -228,7 +256,6 @@ ngAfterViewInit(): void {
             .search($(this).val().toString())
             .draw();
           }
-         // console.log($(this).val().toString())
         });
       });
     });
@@ -290,7 +317,7 @@ ngAfterViewInit(): void {
           timer: 2100,
         });
         this._usuariosService.deleteUser(id).subscribe((res: any) => {
-          console.log(res)
+          //
         })
         setTimeout(()=>{
           location.reload()
@@ -331,4 +358,16 @@ ngAfterViewInit(): void {
     })
   }
 
+  ngOnDestroy(): void {
+    // We remove the last function in the global ext search array so we do not add the fn each time the component is drawn
+    // /!\ This is not the ideal solution as other components may add other search function in this array, so be careful when
+    // handling this global variable
+    $.fn['dataTable'].ext.search.pop();
+  }
+
+  filterById(): void {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.draw();
+    });
+  }
 }

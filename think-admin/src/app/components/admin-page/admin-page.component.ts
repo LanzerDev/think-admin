@@ -18,7 +18,7 @@ import { ADTSettings } from 'angular-datatables/src/models/settings';
 })
 export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  
+  //conectado a quality
 
   @ViewChild(DataTableDirective, { static: false })
   public datatableElement: DataTableDirective;

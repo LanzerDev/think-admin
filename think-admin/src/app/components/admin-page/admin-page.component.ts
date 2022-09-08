@@ -246,7 +246,7 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 // generacion de la tabla
 ngAfterViewInit(): void {
-    this.dtTrigger.next(void 0);
+   // this.dtTrigger.next(void 0);
     this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.columns().every(function () {
         const that = this;
@@ -260,27 +260,6 @@ ngAfterViewInit(): void {
       });
     });
     
-  }
-
-  tableRows(e:any){
-    console.log(e.target.value)
-    this.tableLength = e.target.value;
-    console.log(this.tableLength)
-    this.rerender()
-  }
-
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-  }
-
-  rerender(): void {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next(void 0);
-    });
   }
 
   

@@ -1,7 +1,7 @@
 //importaciones
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const moment = require('moment');
 const usuarios = require('./services/usuarios.js')
 const bodyParser = require('body-parser')
@@ -21,7 +21,7 @@ app.use(cors())
 
 
 app.get('/', (req, res)=>{
-    res.send('Hola, server en express')
+    res.send('think-mercadocenia api')
 })
 
 app.get('/api/usuarios/', (req, res)=>{
@@ -37,19 +37,6 @@ app.post('/api/newUser/', (req, res)=>{
     })
 })
  
-
-
-//const whitelist = ['https://localhost:3000', 'localhost:4200', 'http://localhost:56833/'];
-
-// const options = {
-//     origin: (origin, callback)=>{
-//         if(whitelist.includes(origin)){
-//             callback(null, true);
-//         } else {
-//             callback(new Error('no permitido'))
-//         }
-//     }
-// }
 
 app.listen(port, ()=>{
     console.log('port' + port)

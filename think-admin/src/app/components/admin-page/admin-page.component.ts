@@ -43,7 +43,7 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
   public api = 'https://thinkform.shop/';
 
   ngOnInit(): void {
-
+//pc merge
     jQuery.fn['dataTable'].ext.search.push((settings:any, data:any, dataIndex:any) => {
       const id = parseFloat(data[8]) || 0; // use data for the id column
       if ((isNaN(this.min) && isNaN(this.max)) ||

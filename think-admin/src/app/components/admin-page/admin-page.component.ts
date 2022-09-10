@@ -18,12 +18,14 @@ import { ADTSettings } from 'angular-datatables/src/models/settings';
 })
 export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  //conectado a quality
 
   @ViewChild(DataTableDirective, { static: false })
   public datatableElement: DataTableDirective;
-  min: number;
-  max: number;
+  minEdad: number;
+  maxEdad: number;
+
+  minIng: number;
+  maxIng: number;
 
   public dtOptions: any = {};
 
@@ -44,12 +46,39 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
 
+
+
     jQuery.fn['dataTable'].ext.search.push((settings:any, data:any, dataIndex:any) => {
-      const id = parseFloat(data[8]) || 0; // use data for the id column
-      if ((isNaN(this.min) && isNaN(this.max)) ||
-        (isNaN(this.min) && id <= this.max) ||
-        (this.min <= id && isNaN(this.max)) ||
-        (this.min <= id && id <= this.max)) {
+      if(this.minEdad == 0 || this.minEdad == null || this.minEdad == undefined){
+        this.minEdad = 0;
+      //  console.log(this.minEdad)
+      }
+      if(this.maxEdad == 0 || this.maxEdad == null || this.maxEdad == undefined){
+        this.maxEdad = 100;
+      }
+      const id = parseFloat(data[7]) || 0; // use data for the id column
+      if ((isNaN(this.minEdad) && isNaN(this.maxEdad)) ||
+        (isNaN(this.minEdad) && id <= this.maxEdad) ||
+        (this.minEdad <= id && isNaN(this.maxEdad)) ||
+        (this.minEdad <= id && id <= this.maxEdad)) {
+        return true;
+      }
+      return false;
+    });
+
+    jQuery.fn['dataTable'].ext.search.push((settings:any, data:any, dataIndex:any) => {
+      if(this.minIng == 0 || this.minIng == null || this.minIng == undefined){
+        this.minIng = 0;
+       // console.log(this.minEdad)
+      }
+      if(this.maxIng == 0 || this.maxIng == null || this.maxIng == undefined){
+        this.maxIng = 100000;
+      }
+      const id = parseFloat(data[16]) || 0; // use data for the id column
+      if ((isNaN(this.minIng) && isNaN(this.maxIng)) ||
+        (isNaN(this.minIng) && id <= this.maxIng) ||
+        (this.minIng <= id && isNaN(this.maxIng)) ||
+        (this.minIng <= id && id <= this.maxIng)) {
         return true;
       }
       return false;
@@ -60,10 +89,10 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
     })
     const self = this;
     this.dtOptions = {
-      pageLength: 5,
+      pageLength: 1000,
       lengthMenu: [
-          [10,25,50,100,1000],
-          [10,25,50,100,'Todos'],
+          [5,10,25,50,100,1000],
+          [5,10,25,50,100,'Todos'],
       ],
       ajax: {
         url: this.api + 'api/usuarios',
@@ -71,10 +100,6 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
         dataSrc: ""
       },
       columns: [
-        {
-          title: "ID",
-          data: "id_usuario"
-        },
         {
           title: "Nombre(s)",
           data: "Nombre"
@@ -141,7 +166,7 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         {
           title: "Nivel de ingresos",
-          data: "Ingresos_mensual"
+          data: "Ingresos_mensual",
         },
         {
           title: "Estado civil",
@@ -194,7 +219,8 @@ export class AdminPageComponent implements OnInit, OnDestroy, AfterViewInit {
       // Configure the buttons
       buttons: [
         'excel'
-      ]
+      ],
+      select: true
 
       // dom: 'B<"top"i>rt<"bottom"flp><"clear">',
       // // Configure the buttons
@@ -341,10 +367,15 @@ ngAfterViewInit(): void {
     // We remove the last function in the global ext search array so we do not add the fn each time the component is drawn
     // /!\ This is not the ideal solution as other components may add other search function in this array, so be careful when
     // handling this global variable
-    $.fn['dataTable'].ext.search.pop();
+    jQuery.fn['dataTable'].ext.search.pop();
   }
 
-  filterById(): void {
+  filterByEdad(): void {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.draw();
+    });
+  }
+  filterByIng(): void {
     this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.draw();
     });

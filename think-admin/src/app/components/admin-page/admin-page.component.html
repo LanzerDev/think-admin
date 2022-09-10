@@ -8,7 +8,6 @@
     <table datatable [dtOptions]="dtOptions" class="row-border hover" style="margin-top: 20px;">
       <tfoot>
         <tr>
-          <th><input type="text" placeholder="Buscar por ID" name="id" /></th>
           <th><input type="text" placeholder="Buscar por nombre" name="nombre" /></th>
           <th><input type="text" placeholder="Buscar por apellido 1" name="apellido1" /></th>
           <th><input type="text" placeholder="Buscar por apellido 2" name="apellido2" /></th>
@@ -40,16 +39,27 @@
       </tfoot>
     </table>
   </div>
-  <form (submit)="filterById()">
+  <form (submit)="filterByEdad()">
     <label>
       Edad minima
-      <input type="number" name="min" id="min" [(ngModel)]="min" />
+      <input type="number" name="min" id="min" [(ngModel)]="minEdad" />
     </label>
     <label style="margin-left: 20px;">
       Edad maxima
-      <input type="number" name="max" id="max" [(ngModel)]="max" />
+      <input type="number" name="max" id="max" [(ngModel)]="maxEdad" />
     </label>
     <button class="btn btn-primary" style="margin-left: 20px;" type="submit">Filtrar por edad</button>
+  </form>
+  <form (submit)="filterByIng()">
+    <label>
+      Ingresos minimos
+      <input type="number" name="min" id="min" [(ngModel)]="minIng" />
+    </label>
+    <label style="margin-left: 20px;">
+      Ingresos maximos
+      <input type="number" name="max" id="max" [(ngModel)]="maxIng" />
+    </label>
+    <button class="btn btn-primary" style="margin-left: 20px;" type="submit">Filtrar por ingresos</button>
   </form>
   <br>
   <br>
